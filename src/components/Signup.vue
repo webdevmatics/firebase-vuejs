@@ -8,8 +8,6 @@
             <br>
             <input type="password" v-model="formData.password" class="form-control" placeholder="password">
             <br>
-            <input type="password" class="form-control" placeholder="confirm password">
-            <br>
             <button class="btn btn-success" @click="signUp">SignUp</button>
         </div>
 
@@ -31,7 +29,7 @@
             signUp(){
                 firebase.auth().createUserWithEmailAndPassword(this.formData.email,this.formData.password)
                     .then((user)=>{
-                        alert('created')
+                      this.$router.replace('/hello')
                     })
                     .catch((e)=>{
                     alert('oops'+e.message);

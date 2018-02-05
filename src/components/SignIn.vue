@@ -8,7 +8,7 @@
             <br>
             <input type="password" v-model="formData.password" class="form-control" placeholder="password">
             <br>
-            <button class="btn btn-success">Signin</button>
+            <button class="btn btn-success" @click="signIn">Signin</button>
         </div>
 
     </div>
@@ -26,7 +26,18 @@
                 }
             }
         },
-        methods: {},
+        methods: {
+            signIn(){
+                firebase.auth().signInWithEmailAndPassword(this.formData.email,this.formData.password)
+                    .then((user)=>{
+                      this.$router.replace('/hello')
+
+                    })
+                    .catch((e)=>{
+                        alert(e.message)
+                    })
+            }
+        },
 
         created(){
 

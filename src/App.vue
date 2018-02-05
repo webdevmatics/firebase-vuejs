@@ -2,17 +2,27 @@
   <div id="app">
 
     <div class="navbar">
-      <router-link to="/" class="navbar-brand">VueFire</router-link>
       <ul class="nav navbar-nav">
 
         <li>
+           <router-link to="/">VueFire</router-link>
+        </li>
+        <li v-if="!authUser">
           <router-link to="/sign-in">SignIn</router-link>
         </li>
 
-        <li>
+        <li v-if="!authUser">
           <router-link to="/sign-up">SignUp</router-link>
         </li>
+
+        <li v-if="authUser">
+          <a @click="logout"> Logout</a>
+          <a href="#">{{authUser.identifier}}</a>
+
+       </li>
       </ul>
+
+
     </div>
 
     <img src="./assets/logo.png">
@@ -22,7 +32,34 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data(){
+    return {
+      authUser:null
+    }
+  },
+  watch:{
+    '$route':'setAuthUser'
+  },
+
+  methods:{
+    setAuthUser(){
+      this.authUser=firebase.auth().currentUser;
+    },
+    logout(){
+      firebase.auth().signOut()
+        .then(()=>{
+          this.$router.replace('/sign-in')
+        })
+        .catch((e)=>{
+          alert(e.message)
+        })
+    }
+  },
+  created(){
+    this.setAuthUser();
+    // this.authUser=firebase.auth().currentUser;
+  }
 }
 </script>
 

@@ -6,12 +6,15 @@ import Signup from '@/components/Signup'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   routes: [
     {
       path: '/hello',
       name: 'HelloWorld',
-      component: HelloWorld
+      component: HelloWorld,
+      meta:{
+        requiresAuth:true
+      }
     },
     {
       path: '/sign-in',
@@ -19,9 +22,27 @@ export default new Router({
       component: SignIn
     },
     {
+      path: '*',
+      redirect: '/sign-in',
+    },
+    {
       path: '/sign-up',
       name: 'Signup',
       component: Signup
     }
   ]
-})
+});
+
+router.beforeEach((to,from,next)=>{
+  let currentUser=firebase.auth().currentUser;
+  let requiresAuth=to.matched.some(record=>record.meta.requiresAuth);
+
+  if(requiresAuth && !currentUser) next('sign-in')
+  else if (!requiresAuth && currentUser) next('hello')
+  else next()
+});
+
+export default router
+
+
+
